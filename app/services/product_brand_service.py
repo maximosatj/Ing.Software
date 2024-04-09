@@ -1,4 +1,4 @@
-from app.repositories import ProductBrandRepository
+from app.repositories.product_brand_repository import ProductBrandRepository
 
 class ProductBrandService:
     def __init__(self):

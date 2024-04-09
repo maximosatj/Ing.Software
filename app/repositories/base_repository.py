@@ -1,11 +1,9 @@
-from app.models.client import *
-from app import db
 from app.repositories.CRUD_repository import Read, Update, Create, Delete
-from app.config.database import db
+from app import db
 
 # Base repository for all the other ones. Aplying DRY and IoC principle
 class BaseRepository(Read, Update, Create, Delete):
-    def _init_(self, model):
+    def __init__(self, model):
         self.__model = model
     
     def find_by_id(self, id):

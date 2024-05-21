@@ -1,0 +1,19 @@
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik.productbrand.localhost`)"
+      service: "api@internal"
+      tls:
+        domains:
+          - main: "productbrand.localhost"
+            sans:
+              - "*.productbrand.localhost"
+          - main: "productbrand.local"
+            sans:
+              - "*.productbrand.local"
+
+tls:
+  certificates:
+    - certFile: "/etc/certs/productbrand.localhost.pem"
+      keyFile: "/etc/certs/productbrand.localhost.pem"
+

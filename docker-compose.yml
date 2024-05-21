@@ -1,0 +1,92 @@
+services:
+  ms1:
+    image: microservice-product-brand:1.0
+    networks:
+      - mired
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ms1.rule=Host(`ms1.productbrand.localhost`)"
+      - "traefik.http.routers.ms1.tls=true"
+      - "traefik.http.routers.ms1.entrypoints=websecure"
+      - "traefik.http.services.ms1.loadbalancer.server.port=5000"
+      - "traefik.http.middlewares.ms1.circuitbreaker.expression=LatencyAtQuantileMS(50.0) > 100"
+      - "traefik.http.middlewares.ms1.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+      - "traefik.http.middlewares.ms1.circuitbreaker.expression=NetworkErrorRatio() > 0.5"
+   # ports:
+    #  - "5000:5000"
+
+  reverse-proxy:
+    image: traefik:2.11
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.postgresql.address=:5432"
+      - "--entrypoints.redis.address=:6379"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "6379:6379"
+      - "5432:5432"
+    networks:
+      - mired
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/traefik/config/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./docker/traefik/config/config.yml:/etc/traefik/config.yml:ro
+      - ./docker/traefik/certs:/etc/certs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
+
+  postgresql:
+    image: postgres:latest
+    container_name: postgresql
+    networks:
+      - mired
+    # ports:
+    #   - '5433:5432'
+    environment:
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${BASE_DE_DATOS}
+      - POSTGRES_USER=${USUARIO}
+      - PGDATA=/var/lib/postgresql/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.postgresql.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgresql.entrypoints=postgresql"
+      - "traefik.tcp.routers.postgresql.service=postgresql"
+      - "traefik.tcp.services.postgresql.loadbalancer.server.port=5432"
+    volumes:
+      - ./docker/postgres/_data:/var/lib/postgresql
+    restart: always
+  
+  redis:
+    image: redis:7-bookworm
+    container_name: redis
+    restart: always
+    volumes:
+      - ./data:/data
+      - ./data/redis.conf:/data/redis.conf
+    # command: redis-server /data/redis.conf --loglevel notice --requirepass ${REDIS_PASSWORD}
+    # ports:
+    #   - "6379:6379"
+    networks:
+      - mired
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.redis.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.redis.entrypoints=redis"
+      - "traefik.tcp.routers.redis.service=redis"
+      - "traefik.tcp.services.redis.loadbalancer.server.port=6379"
+
+networks:
+  mired:
+    external: true

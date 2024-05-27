@@ -1,20 +1,35 @@
 services: 
-  traefik:
-    image: "traefik:2.11"
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    
+  reverse-proxy:
+    image: traefik:2.11
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    # command:
+    #   - "--api.insecure=true"
+    #   - "--providers.docker=true"
+    #   - "--providers.docker.exposedbydefault=false"
+    #   - "--entrypoints.web.address=:80"
+    #   - "--entrypoints.websecure.address=:443"
+    #   - "--entrypoints.postgresql.address=:5432"
+    #   - "--entrypoints.redis.address=:6379"
     ports:
       - "80:80"
+      - "443:443"
       - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    newtorks:
+      - "6379:6379"
+      - "5432:5432"
+    networks:
       - mired
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./config/config.yml:/etc/traefik/config.yml:ro
+      - ./certs:/etc/certs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
 
-  newtorks:
-    mired:
-      external: true
+networks:
+  mired:
+    external: true

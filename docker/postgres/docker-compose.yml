@@ -1,35 +1,5 @@
 
 services:
-  # app-mercadito:
-  #   image: app-mercadito:v1.0.1
-  #   networks:
-  #     - postgresql
-  #   ports:
-  #     - '8080:8080'
-  #   environment:
-
-#   postgresql:
-#     #container_name: postgresql-servidor
-#     image: postgres:latest
-
-#     networks:
-#       - postgresql
-#     ports:
-#       - '5433:5432'
-#     environment:
-#       - POSTGRES_PASSWORD=${PASSWORD}
-#       - POSTGRES_DB=${DB}
-#       - POSTGRES_USER=${USER}
-#       - PGDATA=/var/lib/postgresql/data
-#     volumes:
-#       - ./_data:/var/lib/postgresql
-#       - ./_config/traefik.yml:/etc/traefik/traefik.yml:ro
-#       - ./_config/traefik.yml:/etc/traefik/config.yml:ro
-#       - ./_certs:/etc/traefik/certs:ro
-#     restart: always
-
-# networks:
-#   postgresql:
 
  postgresql:
     image: postgres:latest

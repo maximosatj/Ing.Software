@@ -5,6 +5,10 @@ from app.mapping.product_brand_schema import ProductBrandSchema
 schema = ProductBrandSchema()
 product_brand=Blueprint('product_brand',__name__)
 
+@product_brand.route('/', methods=['GET'])
+def index():
+    return {"message":"Hello, World!"}, 200
+
 @product_brand.route('/product_brand/<string:product_brand_id>', methods=['GET'])
 def get_product_brand(product_brand_id):
     product_brand = ProductBrandService().find_by_id(product_brand_id)

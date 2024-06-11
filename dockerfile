@@ -1,11 +1,24 @@
 FROM python:3.11.6-bullseye
 
-WORKDIR /app
+ENV GECKODRIVER_VERSION=0.31.0
+ENV PYTHONUNBUFFERED=1
+ENV PATH=$PATH:/home/flaskapp/.local/bin
 
-ADD . /app
+RUN useradd --create-home --home-dir /home/flaskapp maximosat
 
-RUN pip install -r requirements.txt
+WORKDIR /home/flaskapp
+
+USER maximosat
+RUN mkdir app
+
+COPY ./app ./app
+COPY ./app.py .
+
+ADD requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --user -r requirements.txt
+RUN pip install gevent gunicorn==22.0.0
+
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "--workers", "1", "--log-level", "INFO", "--bind", "0.0.0.0:5000" ,"app:create_app()"]

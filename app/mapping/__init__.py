@@ -1,0 +1,1 @@
+from app.mapping import product_brand_schema

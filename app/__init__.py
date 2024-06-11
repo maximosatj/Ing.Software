@@ -1,25 +1,30 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-#from flask_cors import CORS
 from app.config.database import FULL_URL_DB
+from flask_caching import Cache
 
 db = SQLAlchemy()
 migrate = Migrate()
+cache = Cache()
 
 def create_app():
     app=Flask(__name__)
-    #CORS(app)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = FULL_URL_DB
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     app.debug = True
 
+    from app.resources import product_brand
+    app.register_blueprint(product_brand, url_prefix='/api/v1/')
+    
     db.init_app(app)
-    #migrate.init_app(app, db)
-
-    #with app.app_context():
-    #    db.create_all()
+    migrate.init_app(app, db)
+    #Init app with cache
+    cache.init_app(app, config={'CACHE_TYPE': 'RedisCache', 'CACHE_DEFAULT_TIMEOUT': 300, 
+                                'CACHE_REDIS_HOST:': 'localhost', 'CACHE_REDIS_PORT': '6379', 
+                                'CACHE_REDIS_DB': '0', 'CACHE_REDIS_PASSWORD': 'maximo', 
+                                'CACHE_KEY_PREFIX': 'product_brand'})
 
     return app

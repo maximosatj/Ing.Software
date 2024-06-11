@@ -1,0 +1,2 @@
+from app.resources.product_brand import product_brand
+from app.services.product_brand_service import ProductBrandService

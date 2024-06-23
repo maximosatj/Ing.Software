@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from app import db
+from app.models.product_brand import ProductBrand
 
 
 
 class Create(ABC):
     @abstractmethod
-    def create(self, entity:db.Model):
+    def create(self, entity:ProductBrand):
         pass
 
 class Read(ABC):
@@ -15,10 +15,10 @@ class Read(ABC):
 
 class Update(ABC):
     @abstractmethod
-    def update(self, entity:db.Model, id:int):
+    def update(self, entity:ProductBrand, id:int):
         pass
 
 class Delete(ABC):
     @abstractmethod
-    def delete(self, entity:db.Model):
+    def delete(self, entity:ProductBrand):
         pass

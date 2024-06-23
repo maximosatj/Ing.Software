@@ -19,6 +19,11 @@ def get_product_brand_by_name(name):
     product_brand = ProductBrandService().find_by_name(name)
     return jsonify(schema.dump(product_brand)), 200
 
+@product_brand.route('/product_brand/all', methods=['GET'])
+def get_all_product_brand():
+    product_brand = ProductBrandService().find_all()
+    return jsonify(schema.dump(product_brand, many=True)), 200
+
 @product_brand.route('/product_brand/create', methods=['POST'])
 def create_product_brand():
     product_brand = ProductBrandService().create(schema.load(request.json))

@@ -1,5 +1,6 @@
 from app.repositories.CRUD_repository import Read, Update, Create, Delete
 from app import db
+from app.models.product_brand import ProductBrand
 
 # Base repository for all the other ones. Aplying DRY and IoC principle
 class BaseRepository(Read, Update, Create, Delete):
@@ -12,7 +13,7 @@ class BaseRepository(Read, Update, Create, Delete):
     def find_all(self):
         return db.session.query(self.__model).all()
     
-    def create(self, entity: db.Model):
+    def create(self, entity: ProductBrand):
         db.session.add(entity)
         db.session.commit()
         return entity

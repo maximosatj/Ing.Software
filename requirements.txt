@@ -9,7 +9,7 @@ colorama==0.4.6
 Flask==2.3.3
 Flask-Caching==2.1.0
 Flask-Cors==4.0.0
-flask-marshmallow==0.15.0
+flask-marshmallow==1.2.1
 Flask-Migrate==4.0.4
 Flask-SQLAlchemy==3.0.5
 greenlet==3.0.3

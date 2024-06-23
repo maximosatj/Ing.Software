@@ -5,14 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    # command:
-    #   - "--api.insecure=true"
-    #   - "--providers.docker=true"
-    #   - "--providers.docker.exposedbydefault=false"
-    #   - "--entrypoints.web.address=:80"
-    #   - "--entrypoints.websecure.address=:443"
-    #   - "--entrypoints.postgresql.address=:5432"
-    #   - "--entrypoints.redis.address=:6379"
+  
     ports:
       - "80:80"
       - "443:443"

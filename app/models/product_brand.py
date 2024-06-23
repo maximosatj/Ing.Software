@@ -9,6 +9,6 @@ class ProductBrand (db.Model):
     name  = Column(db.String(50))
     description  = Column(db.String(50))
 
-def __init__(self, name, description):
+def _init_(self, name, description):
     self.name = name
-    self.description = description
+    self.description    =  description

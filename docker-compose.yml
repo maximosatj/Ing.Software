@@ -1,6 +1,6 @@
 services:
   ms1:
-    image: microservice1:v1.0.1
+    image: microservice1:v1.0.2
     networks:
       - mired
     environment:
@@ -8,6 +8,8 @@ services:
       - PASS_DB=maximo
       - URL_DB=postgresql
       - NAME_DB=postgres
+    # deploy:
+    #   replicas: 3
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ms1.rule=Host(`ms1.productbrand.localhost`)"
